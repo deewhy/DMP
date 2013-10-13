@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="8dp" >
+    
+    <ImageView 
+        android:id="@+id/album_thumbnail"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:contentDescription="@string/desc_album_art" />
+    
+    <TextView 
+        android:id="@+id/text_1"
+        android:textSize="16sp"
+        android:textAllCaps="true"
+        android:textStyle="bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#FFFFFF"
+        android:background="#000000"
+        android:paddingLeft="8dp"
+        android:clickable="true"
+        android:singleLine="true"
+        android:layout_toRightOf="@id/album_thumbnail" />
+    
+    <TextView 
+        android:id="@+id/text_2"
+        android:textSize="12sp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="#BEC6FC"
+        android:background="#000000"
+        android:paddingLeft="8dp"
+        android:singleLine="true"
+        android:layout_toRightOf="@id/album_thumbnail"
+        android:layout_below="@id/text_1" />
+    
+
+</RelativeLayout>
