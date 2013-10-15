@@ -10,5 +10,9 @@
     <string name="title_genre_list">Genres</string>
     <string name="desc_album_art">Album Art</string>
     <string name="desc_list_play_button">Play all</string>
+    <string name="title_activity_artist">Artist</string>
+    <string name="title_artist_album_list">Albums</string>
+    <string name="title_artist_song_list">Songs</string>
+    <string name="title_artist_bio">Bio</string>
 
 </resources>

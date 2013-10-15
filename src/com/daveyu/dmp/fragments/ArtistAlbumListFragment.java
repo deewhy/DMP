@@ -1,6 +1,6 @@
 package com.daveyu.dmp.fragments;
 
-import android.content.Intent;
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,14 +12,12 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
-import com.daveyu.dmp.ArtistActivity;
-
-public class ArtistListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class ArtistAlbumListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>  {
 
 	private static final int LOADER_ID = 0;
 	private SimpleCursorAdapter adapter;
+	PassLabel label_passer;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -27,16 +25,20 @@ public class ArtistListFragment extends ListFragment implements LoaderManager.Lo
 		getLoaderManager().initLoader(LOADER_ID, null, this);
 		
 		String[] mProjection = {
-				MediaStore.Audio.Artists.ARTIST
+				MediaStore.Audio.Albums.ALBUM,
+				MediaStore.Audio.Albums.FIRST_YEAR,
+				MediaStore.Audio.Albums.ALBUM_ART
 			};
 		
 		int[] mTo = {
-				com.daveyu.dmp.R.id.text_1
+				com.daveyu.dmp.R.id.text_1,
+				com.daveyu.dmp.R.id.text_2,
+				com.daveyu.dmp.R.id.album_thumbnail
 			};
 		
 		adapter = new SimpleCursorAdapter(
 				getActivity().getApplicationContext(),
-				com.daveyu.dmp.R.layout.list_item,
+				com.daveyu.dmp.R.layout.list_item_albums,
 				null,
 				mProjection,
 				mTo,
@@ -46,7 +48,15 @@ public class ArtistListFragment extends ListFragment implements LoaderManager.Lo
 		setListAdapter(adapter);
 	}
 	
-	
+	@Override
+	public void onAttach(Activity activity) {
+		super.onAttach(activity);
+        try {
+            label_passer = (PassLabel) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString() + " must implement OnArticleSelectedListener");
+        }
+	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -56,17 +66,26 @@ public class ArtistListFragment extends ListFragment implements LoaderManager.Lo
 	@Override
 	public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
 		String mProjection[] = {
-				MediaStore.Audio.Artists._ID,
-				MediaStore.Audio.Artists.ARTIST
+				MediaStore.Audio.Albums._ID,
+				MediaStore.Audio.Albums.ALBUM,
+				MediaStore.Audio.Albums.ARTIST,
+				MediaStore.Audio.Albums.FIRST_YEAR,
+				MediaStore.Audio.Albums.ALBUM_ART
 			};
+		
+		String ARTIST_NAME = label_passer.getArtistName();
+		String[] selectionArgs = {""};
+		selectionArgs[0] = ARTIST_NAME;
+		String selectionClause = "ARTIST = ?";
+		String sortOrder = "MINYEAR";
 		
 		CursorLoader cursorLoader = new CursorLoader(
 				getActivity(),
-				MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
+				MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI,
 				mProjection,
-				null,
-				null,
-				null
+				selectionClause,
+				selectionArgs,
+				sortOrder
 			);
 		
 		return cursorLoader;
@@ -82,26 +101,11 @@ public class ArtistListFragment extends ListFragment implements LoaderManager.Lo
 		adapter.changeCursor(null);
 	}
 	
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		String[] mProjection = {"ARTIST"};
-		String mSelectionClause = "_ID = " + id;
-		
-		Cursor mCursor = getActivity().getContentResolver().query(
-				MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI, 
-				mProjection, 
-				mSelectionClause, 
-				null, 
-				null);
-		
-		int index = mCursor.getColumnIndex(MediaStore.Audio.Artists.ARTIST);
-		
-		mCursor.moveToFirst();
-		String ARTIST = mCursor.getString(index);
-		
-		Intent intent = new Intent(getActivity(), ArtistActivity.class);
-		intent.putExtra("ARTIST", ARTIST);
-		startActivity(intent);
+	/**
+	 * Callback method telling Activity to pass artist name to Fragment
+	 */
+	public interface PassLabel {
+		public String getArtistName();
 	}
 	
 }

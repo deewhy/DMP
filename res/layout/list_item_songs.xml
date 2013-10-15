@@ -36,9 +36,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#FFFFFF"
-        android:background="#000000"
-        android:paddingLeft="8dp"
-        android:clickable="true" />
+        android:background="#00000000"
+        android:paddingLeft="8dp" />
     
     <TextView
         android:id="@+id/text_2"
@@ -46,7 +45,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="#BEC6FC"
-        android:background="#000000"
+        android:background="#00000000"
         android:paddingLeft="8dp" />
 
 </LinearLayout>
