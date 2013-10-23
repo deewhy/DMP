@@ -1,6 +1,6 @@
 package com.daveyu.dmp.fragments;
 
-import adapters.ArtistListCursorAdapter;
+import com.daveyu.dmp.adapters.ArtistListCursorAdapter;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;

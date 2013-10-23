@@ -1,4 +1,4 @@
-package adapters;
+package com.daveyu.dmp.adapters;
 
 import java.util.Locale;
 
