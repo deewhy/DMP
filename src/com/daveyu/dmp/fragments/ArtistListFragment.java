@@ -1,5 +1,6 @@
 package com.daveyu.dmp.fragments;
 
+import adapters.ArtistListCursorAdapter;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -8,7 +9,6 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +19,7 @@ import com.daveyu.dmp.ArtistActivity;
 public class ArtistListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	private static final int LOADER_ID = 0;
-	private SimpleCursorAdapter adapter;
+	private ArtistListCursorAdapter adapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -34,7 +34,7 @@ public class ArtistListFragment extends ListFragment implements LoaderManager.Lo
 				com.daveyu.dmp.R.id.text_1
 			};
 		
-		adapter = new SimpleCursorAdapter(
+		adapter = new ArtistListCursorAdapter(
 				getActivity().getApplicationContext(),
 				com.daveyu.dmp.R.layout.list_item,
 				null,
@@ -60,13 +60,15 @@ public class ArtistListFragment extends ListFragment implements LoaderManager.Lo
 				MediaStore.Audio.Artists.ARTIST
 			};
 		
+		String sortOrder = "ARTIST_KEY";
+		
 		CursorLoader cursorLoader = new CursorLoader(
 				getActivity(),
 				MediaStore.Audio.Artists.EXTERNAL_CONTENT_URI,
 				mProjection,
 				null,
 				null,
-				null
+				sortOrder
 			);
 		
 		return cursorLoader;

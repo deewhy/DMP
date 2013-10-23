@@ -12,6 +12,7 @@
                android:drawSelectorOnTop="false"
                android:dividerHeight="10dp"
                android:divider="@null"
-               android:clickable="true"/>
+               android:clickable="true"
+               android:listSelector="#00000000" />
 
 </LinearLayout>

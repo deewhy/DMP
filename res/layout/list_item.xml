@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal" >
+    android:orientation="vertical" >
     
     <!-- 
     <ImageView
@@ -12,27 +12,47 @@
         android:src="@drawable/list_playbutton"
         android:clickable="true" />
     -->
-    
-    <ImageView
-        android:id="@+id/list_play_button"
-        android:layout_width="16dp"
-        android:layout_height="32dp"
-        android:src="@drawable/list_playbutton"
-        android:paddingLeft="12dp"
-        android:contentDescription="@string/desc_list_play_button" />
-    
     <TextView 
-        android:id="@+id/text_1"
-        android:textSize="16sp"
-        android:textAllCaps="true"
-        android:textStyle="bold"
+        android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="32dp"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
+        android:paddingLeft="32dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="22dp"
         android:textColor="#FFFFFF"
-        android:background="#00000000"
-        android:paddingLeft="16dp"
-        android:singleLine="true" />
+        android:textSize="16sp"
+        android:textStyle="bold" 
+        android:clickable="true" />
+    
+    <LinearLayout 
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >"
+        
+        <ImageView
+        	android:id="@+id/list_play_button"
+        	android:layout_width="16dp"
+       		android:layout_height="32dp"
+        	android:src="@drawable/list_playbutton"
+        	android:paddingLeft="12dp"
+       		android:contentDescription="@string/desc_list_play_button" />
+    
+    	<TextView 
+        	android:id="@+id/text_1"
+        	android:textSize="16sp"
+        	android:textAllCaps="true"
+        	android:textStyle="bold"
+        	android:layout_width="match_parent"
+        	android:layout_height="32dp"
+        	android:gravity="center_vertical"
+        	android:textColor="#FFFFFF"
+        	android:background="#00000000"
+        	android:paddingLeft="16dp"
+        	android:singleLine="true" />
+        
+        
+    </LinearLayout>
+    
     
 
 </LinearLayout>
