@@ -1,6 +1,9 @@
 package com.daveyu.dmp.fragments;
 
+import com.daveyu.dmp.AlbumSongListActivity;
+
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -12,6 +15,7 @@ import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ListView;
 
 public class ArtistAlbumListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor>  {
 
@@ -99,6 +103,39 @@ public class ArtistAlbumListFragment extends ListFragment implements LoaderManag
 	@Override
 	public void onLoaderReset(Loader<Cursor> loader) {
 		adapter.changeCursor(null);
+	}
+	
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		
+		String[] mProjection = {"ALBUM, ARTIST, ALBUM_ART"};
+		String mSelectionClause = "_ID = " + id;
+		
+		Cursor mCursor = getActivity().getContentResolver().query(
+				MediaStore.Audio.Albums.EXTERNAL_CONTENT_URI, 
+				mProjection, 
+				mSelectionClause, 
+				null, 
+				null);
+		
+		int index = mCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM);
+		
+		mCursor.moveToFirst();
+		String ALBUM = mCursor.getString(index);
+		
+		index = mCursor.getColumnIndex(MediaStore.Audio.Albums.ARTIST);
+		String ARTIST = mCursor.getString(index);
+		
+		index = mCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
+		String ALBUM_ART = mCursor.getString(index);
+		
+		
+		Intent intent = new Intent(getActivity(), AlbumSongListActivity.class);
+		intent.putExtra("ALBUM", ALBUM);
+		intent.putExtra("ARTIST", ARTIST);
+		intent.putExtra("ALBUM_ART", ALBUM_ART);
+		intent.putExtra("CALLER", "ARTIST");
+		startActivity(intent);
 	}
 	
 	/**
