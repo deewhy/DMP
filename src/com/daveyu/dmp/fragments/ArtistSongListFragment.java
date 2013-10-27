@@ -27,16 +27,18 @@ public class ArtistSongListFragment extends ListFragment implements LoaderManage
 		getLoaderManager().initLoader(LOADER_ID, null, this);
 		
 		String[] mProjection = {
-				MediaStore.Audio.Media.TITLE
+				MediaStore.Audio.Media.TITLE,
+				MediaStore.Audio.Media.ALBUM
 			};
 		
 		int[] mTo = {
-				com.daveyu.dmp.R.id.text_1
+				com.daveyu.dmp.R.id.text_1,
+				com.daveyu.dmp.R.id.text_2
 			};
 		
 		adapter = new SimpleCursorAdapter(
 				getActivity().getApplicationContext(),
-				com.daveyu.dmp.R.layout.list_item,
+				com.daveyu.dmp.R.layout.list_item_songs,
 				null,
 				mProjection,
 				mTo,
@@ -67,7 +69,8 @@ public class ArtistSongListFragment extends ListFragment implements LoaderManage
 	public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
 		String mProjection[] = {
 				MediaStore.Audio.Media._ID,
-				MediaStore.Audio.Media.TITLE
+				MediaStore.Audio.Media.TITLE,
+				MediaStore.Audio.Media.ALBUM
 			};
 		
 		String ARTIST_NAME = label_passer.getArtistName();

@@ -7,10 +7,11 @@
     <style name="AppBaseTheme" parent="android:Theme.Holo">
         <!-- API 11 theme customizations can go here. -->
         <item name="android:actionBarStyle">@style/BlackActionBar</item>
+        <item name="android:windowActionBarOverlay">true</item>
     </style>
     
     <style name="BlackActionBar" parent="android:Widget.Holo.ActionBar">
-        <item name="android:background">#000000</item>
+        <item name="android:background">#7D000000</item>
     </style>
 
 </resources>
