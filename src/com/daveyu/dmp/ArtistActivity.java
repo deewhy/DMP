@@ -26,9 +26,11 @@ import com.daveyu.dmp.fragments.ArtistAlbumListFragment;
 import com.daveyu.dmp.fragments.ArtistAlbumListFragment.PassLabel;
 import com.daveyu.dmp.fragments.ArtistBioFragment;
 import com.daveyu.dmp.fragments.ArtistSongListFragment;
+import com.daveyu.dmp.lastfm.Artist;
+import com.daveyu.dmp.lastfm.Artist.SignalBackgroundChange;
 
 public class ArtistActivity extends FragmentActivity 
-	implements PassLabel, ChangeBackgroundDialog.ChangeBackgroundDialogListener {
+	implements PassLabel, ChangeBackgroundDialog.ChangeBackgroundDialogListener, SignalBackgroundChange {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -66,7 +68,8 @@ public class ArtistActivity extends FragmentActivity
 			Uri uri = Uri.parse(file.toURI().toString());
 			imageView.setImageURI(uri);
 		} else {
-			imageView.setImageResource(com.daveyu.dmp.R.drawable.background_test_2);
+			Artist getArtist = new Artist();
+			getArtist.getImage(ARTIST, this);
 		}
 		
 		mRequestFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -190,6 +193,8 @@ public class ArtistActivity extends FragmentActivity
 	@Override
 	public void sourceWeb(DialogFragment dialog) {
 		Toast.makeText(getApplicationContext(), "Clicked the button for source: Web", Toast.LENGTH_SHORT).show();
+		Artist getArtist = new Artist();
+		getArtist.getImage(ARTIST, this);
 	}
 	
 	/**
@@ -224,7 +229,6 @@ public class ArtistActivity extends FragmentActivity
 	                try {
 						in.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 	            }
@@ -232,14 +236,25 @@ public class ArtistActivity extends FragmentActivity
 	                try {
 						out.close();
 					} catch (IOException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 	            }
 		}
-		
-		
+	}
 	
+	/**
+	 * Callback method used by AsyncTask when finished task. Attempts to set newly downloaded
+	 * file to background ImageView.
+	 */
+	@Override
+	public void tryChangeBackground() {
+		ImageView imageView = (ImageView) findViewById(com.daveyu.dmp.R.id.artist_background); 
+		File file = new File(getExternalFilesDir(null) + File.separator + "artistpics" + File.separator + ARTIST + ".jpg");
+		if (file.exists()) {
+			Uri uri = Uri.parse(file.toURI().toString());
+			imageView.setImageURI(uri);
+			imageView.invalidate();
+		}
 		
 	}
 	
