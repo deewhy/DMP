@@ -2,30 +2,27 @@ package com.daveyu.dmp.adapters;
 
 import java.util.Locale;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ArtistListCursorAdapter extends SimpleCursorAdapter implements
+public class SongListCursorAdapter extends SimpleCursorAdapter implements
 		View.OnClickListener {
 	
 	Context context;
-	Activity activity;
 	private LayoutInflater mInflater;
 
-	public ArtistListCursorAdapter(Context context, int layout, Cursor c,
+	public SongListCursorAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
 		mInflater = LayoutInflater.from(context);
 	}
-
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
@@ -38,10 +35,10 @@ public class ArtistListCursorAdapter extends SimpleCursorAdapter implements
 	        }
 	        View v;
 	        if (convertView == null) {
-	            v = mInflater.inflate(com.daveyu.dmp.R.layout.list_item, null);
+	            v = mInflater.inflate(com.daveyu.dmp.R.layout.list_item_songs, null);
 	            holder = new ViewHolder();
-	            holder.artistName = (TextView)v.findViewById(com.daveyu.dmp.R.id.text_1);
-	            holder.playButton = (ImageView)v.findViewById(com.daveyu.dmp.R.id.list_play_button);
+	            holder.songTitle = (TextView)v.findViewById(com.daveyu.dmp.R.id.text_1);
+	            holder.artistName = (TextView)v.findViewById(com.daveyu.dmp.R.id.text_2);
 	            holder.header = (TextView)v.findViewById(com.daveyu.dmp.R.id.header);
 	            v.setTag(holder);
 	        } else {
@@ -67,7 +64,9 @@ public class ArtistListCursorAdapter extends SimpleCursorAdapter implements
         boolean needHeader = false;
         
         String text = cursor.getString(from[0]);
+        String text2 = cursor.getString(from[1]);
         if (text == null) {text = "";}
+        if (text2 == null) {text = "";}
         
         final int position = cursor.getPosition();
         
@@ -129,55 +128,25 @@ public class ArtistListCursorAdapter extends SimpleCursorAdapter implements
         				setViewText((TextView) holder.header, text.substring(0, 1));
         				}
         	holder.header.setVisibility(View.VISIBLE);
-        	ElementType headerElement = new ElementType();
-        	headerElement.type = "HEADER";
-        	holder.header.setTag(headerElement);
         	holder.header.setOnClickListener(this);
         	} else {
         		holder.header.setVisibility(View.GONE);
         		}
         
-        /**
-         * Tag information inside 'Play all' button.
-         */
-        setViewText((TextView) holder.artistName, text);
-        ElementType playAllButton = new ElementType();
-        playAllButton.type = "PLAY_ALL_BUTTON";
-        playAllButton.artistName = text;
-        holder.playButton.setTag(playAllButton);
-        holder.playButton.setOnClickListener(this);
-                    
-                
+        setViewText((TextView) holder.songTitle, text);
+        setViewText((TextView) holder.artistName, text2);
+        
     }
 	
 	static class ViewHolder {
 		private TextView header;
+		private TextView songTitle;
 		private TextView artistName;
-		private ImageView playButton;
 	}
-	
-	/**
-	 * Used to hold tag data used by onClick() to determine what type of element
-	 * was clicked and which row was clicked.
-	 */
-	static class ElementType {
-		String type;
-		String artistName;
-	}
-	
-	
-	/**
-	 * Placeholder
-	 */
+
 	@Override
 	public void onClick(View v) {
-		ElementType buttonType;
-		buttonType = (ElementType) v.getTag();
-		if (buttonType.type == "HEADER") {
-			Toast.makeText(v.getContext(), "Clicked the header", Toast.LENGTH_SHORT).show();	
-		} else {
-		 Toast.makeText(v.getContext(), "Clicked the play button for " + buttonType.artistName, Toast.LENGTH_SHORT).show(); }
-
+		Toast.makeText(v.getContext(), "Clicked the header", Toast.LENGTH_SHORT).show();
 	}
 
 }

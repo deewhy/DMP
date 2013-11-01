@@ -2,7 +2,6 @@ package com.daveyu.dmp.adapters;
 
 import java.util.Locale;
 
-import android.app.Activity;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -13,19 +12,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class ArtistListCursorAdapter extends SimpleCursorAdapter implements
+public class AlbumListCursorAdapter extends SimpleCursorAdapter implements
 		View.OnClickListener {
 	
 	Context context;
-	Activity activity;
 	private LayoutInflater mInflater;
 
-	public ArtistListCursorAdapter(Context context, int layout, Cursor c,
+	public AlbumListCursorAdapter(Context context, int layout, Cursor c,
 			String[] from, int[] to, int flags) {
 		super(context, layout, c, from, to, flags);
 		mInflater = LayoutInflater.from(context);
 	}
-
+	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder holder;
@@ -38,10 +36,11 @@ public class ArtistListCursorAdapter extends SimpleCursorAdapter implements
 	        }
 	        View v;
 	        if (convertView == null) {
-	            v = mInflater.inflate(com.daveyu.dmp.R.layout.list_item, null);
+	            v = mInflater.inflate(com.daveyu.dmp.R.layout.list_item_albums, null);
 	            holder = new ViewHolder();
-	            holder.artistName = (TextView)v.findViewById(com.daveyu.dmp.R.id.text_1);
-	            holder.playButton = (ImageView)v.findViewById(com.daveyu.dmp.R.id.list_play_button);
+	            holder.albumName = (TextView)v.findViewById(com.daveyu.dmp.R.id.text_1);
+	            holder.artistName = (TextView)v.findViewById(com.daveyu.dmp.R.id.text_2);
+	            holder.albumArt = (ImageView)v.findViewById(com.daveyu.dmp.R.id.album_thumbnail);
 	            holder.header = (TextView)v.findViewById(com.daveyu.dmp.R.id.header);
 	            v.setTag(holder);
 	        } else {
@@ -67,7 +66,11 @@ public class ArtistListCursorAdapter extends SimpleCursorAdapter implements
         boolean needHeader = false;
         
         String text = cursor.getString(from[0]);
+        String text2 = cursor.getString(from[1]);
+        String text3 = cursor.getString(from[2]);
         if (text == null) {text = "";}
+        if (text2 == null) {text = "";}
+        if (text3 == null) {text = "";}
         
         final int position = cursor.getPosition();
         
@@ -138,33 +141,31 @@ public class ArtistListCursorAdapter extends SimpleCursorAdapter implements
         		}
         
         /**
-         * Tag information inside 'Play all' button.
+         * Tag information inside Album art thumbnail.
          */
-        setViewText((TextView) holder.artistName, text);
-        ElementType playAllButton = new ElementType();
-        playAllButton.type = "PLAY_ALL_BUTTON";
-        playAllButton.artistName = text;
-        holder.playButton.setTag(playAllButton);
-        holder.playButton.setOnClickListener(this);
+        setViewText((TextView) holder.albumName, text);
+        setViewText((TextView) holder.artistName, text2);
+        setViewImage((ImageView) holder.albumArt, text3);
+        ElementType albumArtButton = new ElementType();
+        albumArtButton.type = "ALBUM_ART";
+        albumArtButton.artistName = text;
+        holder.albumArt.setTag(albumArtButton);
+        holder.albumArt.setOnClickListener(this);
                     
                 
     }
-	
+
 	static class ViewHolder {
 		private TextView header;
+		private TextView albumName;
 		private TextView artistName;
-		private ImageView playButton;
+		private ImageView albumArt;
 	}
 	
-	/**
-	 * Used to hold tag data used by onClick() to determine what type of element
-	 * was clicked and which row was clicked.
-	 */
 	static class ElementType {
 		String type;
 		String artistName;
 	}
-	
 	
 	/**
 	 * Placeholder
@@ -176,7 +177,7 @@ public class ArtistListCursorAdapter extends SimpleCursorAdapter implements
 		if (buttonType.type == "HEADER") {
 			Toast.makeText(v.getContext(), "Clicked the header", Toast.LENGTH_SHORT).show();	
 		} else {
-		 Toast.makeText(v.getContext(), "Clicked the play button for " + buttonType.artistName, Toast.LENGTH_SHORT).show(); }
+		 Toast.makeText(v.getContext(), "Clicked the album thumbnail for " + buttonType.artistName, Toast.LENGTH_SHORT).show(); }
 
 	}
 

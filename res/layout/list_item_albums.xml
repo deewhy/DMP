@@ -1,39 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="8dp" >
-    
-    <ImageView 
-        android:id="@+id/album_thumbnail"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
-        android:contentDescription="@string/desc_album_art" />
+    android:layout_height="wrap_content"
+    android:orientation="vertical" >
     
     <TextView 
-        android:id="@+id/text_1"
-        android:textSize="16sp"
-        android:textAllCaps="true"
-        android:textStyle="bold"
-        android:layout_width="wrap_content"
+        android:id="@+id/header"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingLeft="32dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="22dp"
         android:textColor="#FFFFFF"
-        android:background="#00000000"
-        android:paddingLeft="8dp"
-        android:singleLine="true"
-        android:layout_toRightOf="@id/album_thumbnail" />
+        android:textSize="16sp"
+        android:textStyle="bold" 
+        android:clickable="true"
+        android:visibility="gone" />
+    "
+	<RelativeLayout
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:paddingLeft="8dp" >
     
-    <TextView 
-        android:id="@+id/text_2"
-        android:textSize="12sp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="#BEC6FC"
-        android:background="#00000000"
-        android:paddingLeft="8dp"
-        android:singleLine="true"
-        android:layout_toRightOf="@id/album_thumbnail"
-        android:layout_below="@id/text_1" />
+    		<ImageView 
+        		android:id="@+id/album_thumbnail"
+        		android:layout_width="80dp"
+        		android:layout_height="80dp"
+        		android:contentDescription="@string/desc_album_art" />
     
-
-</RelativeLayout>
+    		<TextView 
+        		android:id="@+id/text_1"
+       			android:textSize="16sp"
+       			android:textAllCaps="true"
+        		android:textStyle="bold"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:textColor="#FFFFFF"
+        		android:background="#00000000"
+        		android:paddingLeft="8dp"
+        		android:singleLine="true"
+        		android:layout_toRightOf="@id/album_thumbnail" />
+    
+    		<TextView 
+        		android:id="@+id/text_2"
+       			android:textSize="12sp"
+        		android:layout_width="wrap_content"
+        		android:layout_height="wrap_content"
+        		android:textColor="#BEC6FC"
+        		android:background="#00000000"
+        		android:paddingLeft="8dp"
+        		android:singleLine="true"
+        		android:layout_toRightOf="@id/album_thumbnail"
+        		android:layout_below="@id/text_1" />
+    
+	</RelativeLayout>
+	
+</LinearLayout>

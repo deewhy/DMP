@@ -1,7 +1,5 @@
 package com.daveyu.dmp.fragments;
 
-import com.daveyu.dmp.AlbumSongListActivity;
-
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -10,16 +8,18 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ListView;
 
+import com.daveyu.dmp.AlbumSongListActivity;
+import com.daveyu.dmp.adapters.AlbumListCursorAdapter;
+
 public class AlbumListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	private static final int LOADER_ID = 0;
-	private SimpleCursorAdapter adapter;
+	private AlbumListCursorAdapter adapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class AlbumListFragment extends ListFragment implements LoaderManager.Loa
 				com.daveyu.dmp.R.id.album_thumbnail
 			};
 		
-		adapter = new SimpleCursorAdapter(
+		adapter = new AlbumListCursorAdapter(
 				getActivity().getApplicationContext(),
 				com.daveyu.dmp.R.layout.list_item_albums,
 				null,

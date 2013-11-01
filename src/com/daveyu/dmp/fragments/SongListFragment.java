@@ -7,15 +7,16 @@ import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.daveyu.dmp.adapters.SongListCursorAdapter;
+
 public class SongListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
 	private static final int LOADER_ID = 0;
-	private SimpleCursorAdapter adapter;
+	private SongListCursorAdapter adapter;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -32,7 +33,7 @@ public class SongListFragment extends ListFragment implements LoaderManager.Load
 				com.daveyu.dmp.R.id.text_2
 		};
 		
-		adapter = new SimpleCursorAdapter(
+		adapter = new SongListCursorAdapter(
 				getActivity().getApplicationContext(),
 				com.daveyu.dmp.R.layout.list_item_songs,
 				null,
