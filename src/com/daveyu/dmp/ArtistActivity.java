@@ -11,6 +11,7 @@ import Testing.ChangeBackgroundDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -25,12 +26,14 @@ import android.widget.Toast;
 import com.daveyu.dmp.fragments.ArtistAlbumListFragment;
 import com.daveyu.dmp.fragments.ArtistAlbumListFragment.PassLabel;
 import com.daveyu.dmp.fragments.ArtistBioFragment;
+import com.daveyu.dmp.fragments.ArtistBioFragment.GetBio;
 import com.daveyu.dmp.fragments.ArtistSongListFragment;
 import com.daveyu.dmp.lastfm.Artist;
 import com.daveyu.dmp.lastfm.Artist.SignalBackgroundChange;
+import com.daveyu.dmp.lastfm.Artist.SignalBioChange;
 
 public class ArtistActivity extends FragmentActivity 
-	implements PassLabel, ChangeBackgroundDialog.ChangeBackgroundDialogListener, SignalBackgroundChange {
+	implements PassLabel, ChangeBackgroundDialog.ChangeBackgroundDialogListener, SignalBackgroundChange, SignalBioChange, GetBio {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -48,6 +51,8 @@ public class ArtistActivity extends FragmentActivity
 	ViewPager mViewPager;
 	
 	String ARTIST;
+	String ARTIST_BIO;
+	Uri ARTIST_URI;
 	
 	private Intent mRequestFileIntent;
 
@@ -55,21 +60,29 @@ public class ArtistActivity extends FragmentActivity
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Intent intent = getIntent();
-		ARTIST = intent.getStringExtra("ARTIST");
-		setTitle(ARTIST);
+		Artist getArtist = new Artist();
 		
-		setContentView(R.layout.activity_artist);
-		
-		ImageView imageView = (ImageView) findViewById(com.daveyu.dmp.R.id.artist_background); 
-		
-		File file = new File(getExternalFilesDir(null) + File.separator + "artistpics" + File.separator + ARTIST + ".jpg");
-		if (file.exists()) {
-			Uri uri = Uri.parse(file.toURI().toString());
-			imageView.setImageURI(uri);
+		if (savedInstanceState != null) {
+			ARTIST = savedInstanceState.getString("ARTIST_NAME_KEY");
+			ARTIST_BIO = savedInstanceState.getString("ARTIST_BIO_KEY");
 		} else {
-			Artist getArtist = new Artist();
-			getArtist.getImage(ARTIST, this);
+			Intent intent = getIntent();
+			ARTIST = intent.getStringExtra("ARTIST");
+			getArtist.getBio(ARTIST, this);
+		}
+		
+		setTitle(ARTIST);
+		setContentView(R.layout.activity_artist);
+		ImageView imageView = (ImageView) findViewById(com.daveyu.dmp.R.id.artist_background);
+		
+		if (isExternalStorageReadable() == true) {
+			File file = new File(getExternalFilesDir(null) + File.separator + "artistpics" + File.separator + ARTIST + ".jpg");
+			if (file.exists()) {
+				ARTIST_URI = Uri.parse(file.toURI().toString());
+				imageView.setImageURI(ARTIST_URI);
+			} else {
+				getArtist.getImage(ARTIST, this);
+			}
 		}
 		
 		mRequestFileIntent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -87,6 +100,13 @@ public class ArtistActivity extends FragmentActivity
 	}
 
 	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putString("ARTIST_BIO_KEY", ARTIST_BIO);
+		savedInstanceState.putString("ARTIST_NAME_KEY", ARTIST);
+		super.onSaveInstanceState(savedInstanceState);
+	}
+
+	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.artist, menu);
@@ -96,6 +116,10 @@ public class ArtistActivity extends FragmentActivity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+			return true;
 		case R.id.action_change_background:
 			changeBackground();
 			return true;
@@ -104,17 +128,25 @@ public class ArtistActivity extends FragmentActivity
 		}
 	}
 	
+	public boolean isExternalStorageReadable() {
+	    String state = Environment.getExternalStorageState();
+	    if (Environment.MEDIA_MOUNTED.equals(state) ||
+	        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
+	        return true;
+	    }
+	    return false;
+	}
+	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent returnIntent) {
 		if (resultCode != RESULT_OK) {
             // Exit without doing anything else
             return;
         } else {
-            
-            Uri returnUri = returnIntent.getData();
+            Uri ARTIST_URI = returnIntent.getData();
             ImageView imageView = (ImageView) findViewById(com.daveyu.dmp.R.id.artist_background); 
-            imageView.setImageURI(returnUri);
-            copyImageToDir(returnUri);
+            imageView.setImageURI(ARTIST_URI);
+            copyImageToDir(ARTIST_URI);
         }
 	}
 
@@ -131,19 +163,20 @@ public class ArtistActivity extends FragmentActivity
 		@Override
 		public Fragment getItem(int position) {
 			// getItem is called to instantiate the fragment for the given page.
-			// Return a DummySectionFragment (defined as a static inner class
-			// below) with the page number as its lone argument.
-			Fragment fragment2 = new ArtistAlbumListFragment();
-			Fragment fragment3 = new ArtistSongListFragment();
-			Fragment fragment4 = new ArtistBioFragment();
+			Fragment ArtistAlbumTabFragment = new ArtistAlbumListFragment();
+			Fragment ArtistSongTabFragment = new ArtistSongListFragment();
+			Fragment ArtistBioTabFragment = new ArtistBioFragment();
 			
 			switch (position) {
 			case 0:
-				return fragment2;
+				return ArtistAlbumTabFragment;
 			case 1:
-				return fragment3;
+				return ArtistSongTabFragment;
+			case 2:
+				return ArtistBioTabFragment;
+			default:
+				return ArtistAlbumTabFragment;
 			}
-			return fragment4;
 		}
 
 		@Override
@@ -177,7 +210,7 @@ public class ArtistActivity extends FragmentActivity
 	 */
 	@Override
 	public String getArtistName() {
-		return ARTIST;// TODO Auto-generated method stub
+		return ARTIST;
 	}
 	
 	/**
@@ -251,11 +284,32 @@ public class ArtistActivity extends FragmentActivity
 		ImageView imageView = (ImageView) findViewById(com.daveyu.dmp.R.id.artist_background); 
 		File file = new File(getExternalFilesDir(null) + File.separator + "artistpics" + File.separator + ARTIST + ".jpg");
 		if (file.exists()) {
-			Uri uri = Uri.parse(file.toURI().toString());
-			imageView.setImageURI(uri);
+			ARTIST_URI = Uri.parse(file.toURI().toString());
+			imageView.setImageURI(ARTIST_URI);
 			imageView.invalidate();
 		}
-		
+	}
+	
+	/**
+	 * Callback method used by AsyncTask when finished task. 
+	 * Passes retrieved artist biography as String.
+	 */
+	@Override
+	public void tryChangeBio(String summary) {
+		ARTIST_BIO = summary;
+	}
+	
+	/**
+	 * Callback method used by ArtistBioFragment to retrieve 
+	 * artist biography String.
+	 */
+	@Override
+	public String getBio() {
+		if (ARTIST_BIO == null) {
+			return "Artist bio could not be loaded. <br>Please try again later.";
+		} else {
+		return ARTIST_BIO;
+		}
 	}
 	
 }

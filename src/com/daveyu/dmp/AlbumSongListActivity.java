@@ -22,37 +22,43 @@ public class AlbumSongListActivity extends FragmentActivity implements PassLabel
 	String ALBUM_ART;
 	String CALLER;
 	
+	int actionBarHeight;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Intent intent = getIntent();
-		ALBUM = intent.getStringExtra("ALBUM");
-		ARTIST = intent.getStringExtra("ARTIST");
-		ALBUM_ART = intent.getStringExtra("ALBUM_ART");
-		CALLER = intent.getStringExtra("CALLER");
+		if (savedInstanceState != null) {
+			ALBUM = savedInstanceState.getString("ALBUM_KEY");
+			ARTIST = savedInstanceState.getString("ARTIST_KEY");
+			ALBUM_ART = savedInstanceState.getString("ALBUM_ART_KEY");
+			CALLER = savedInstanceState.getString("CALLER_KEY");
+			actionBarHeight = savedInstanceState.getInt("ACTIONBAR_HEIGHT_KEY");
+		} else {
+			Intent intent = getIntent();
+			ALBUM = intent.getStringExtra("ALBUM");
+			ARTIST = intent.getStringExtra("ARTIST");
+			ALBUM_ART = intent.getStringExtra("ALBUM_ART");
+			CALLER = intent.getStringExtra("CALLER");
+			
+			TypedValue tv = new TypedValue();
+			if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
+			{
+			    actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
+			}
+			actionBarHeight = actionBarHeight + (actionBarHeight / 2);
+			
+			FragmentManager fm = getSupportFragmentManager();
+			FragmentTransaction ft = fm.beginTransaction();
+			Fragment fragment = new AlbumSongListFragment();
+			ft.add(R.id.album_song_list_fragment_container, fragment);
+			ft.commit();
+		}
+		
 		getActionBar().setTitle(ALBUM);
 		getActionBar().setSubtitle(ARTIST);
 		
 		setContentView(R.layout.activity_album_song_list);
-		
-		int actionBarHeight = 0;
-		
-		TypedValue tv = new TypedValue();
-		if (getTheme().resolveAttribute(android.R.attr.actionBarSize, tv, true))
-		{
-		    actionBarHeight = TypedValue.complexToDimensionPixelSize(tv.data,getResources().getDisplayMetrics());
-		}
-		actionBarHeight = actionBarHeight + (actionBarHeight / 2);
-		
-		FragmentManager fm = getSupportFragmentManager();
-		FragmentTransaction ft = fm.beginTransaction();
-		Fragment fragment = new AlbumSongListFragment();
-		ft.add(R.id.album_song_list_fragment_container, fragment);
-		ft.commit();
-		
-		//View view = findViewById(com.daveyu.dmp.R.id.album_song_list_fragment_container);
-		//view.setPadding(0, actionBarHeight, 0, 0);
 		
 		ImageView background = (ImageView) findViewById(com.daveyu.dmp.R.id.album_background);
 		try {
@@ -72,11 +78,25 @@ public class AlbumSongListActivity extends FragmentActivity implements PassLabel
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch (item.getItemId()) {
+		case R.id.action_settings:
+			Intent intent = new Intent(this, SettingsActivity.class);
+			startActivity(intent);
+			return true;
 		case com.daveyu.dmp.R.id.action_go_to_artist:
 			goToArtist();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putString("ALBUM_KEY", ALBUM);
+		savedInstanceState.putString("ARTIST_KEY", ARTIST);
+		savedInstanceState.putString("ALBUM_ART_KEY", ALBUM_ART);
+		savedInstanceState.putString("CALLER_KEY", CALLER);
+		savedInstanceState.putInt("ACTIONBAR_HEIGHT_KEY", actionBarHeight);
+		super.onSaveInstanceState(savedInstanceState);
 	}
 
 	@Override

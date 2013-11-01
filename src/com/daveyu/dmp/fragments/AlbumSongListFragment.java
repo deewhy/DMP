@@ -18,10 +18,20 @@ public class AlbumSongListFragment extends ListFragment implements LoaderManager
 	private static final int LOADER_ID = 0;
 	private SimpleCursorAdapter adapter;
 	PassLabel label_passer;
+	String ARTIST_NAME;
+	String ALBUM_NAME;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		if (savedInstanceState != null) {
+			ARTIST_NAME = savedInstanceState.getString("ARTIST_NAME_KEY");
+			ALBUM_NAME = savedInstanceState.getString("ALBUM_NAME_KEY");
+		} else {
+			ARTIST_NAME = label_passer.getArtistName();
+			ALBUM_NAME = label_passer.getAlbumName();
+		}
+		
 		getLoaderManager().initLoader(LOADER_ID, null, this);
 		
 		String[] mProjection = {
@@ -61,6 +71,13 @@ public class AlbumSongListFragment extends ListFragment implements LoaderManager
 	}
 	
 	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putString("ARTIST_NAME_KEY", ARTIST_NAME);
+		savedInstanceState.putString("ALBUM_NAME_KEY", ALBUM_NAME);
+		super.onSaveInstanceState(savedInstanceState);
+	}
+	
+	@Override
 	public Loader<Cursor> onCreateLoader(int loaderID, Bundle bundle) {
 		String mProjection[] = {
 				MediaStore.Audio.Media._ID,
@@ -69,9 +86,6 @@ public class AlbumSongListFragment extends ListFragment implements LoaderManager
 				MediaStore.Audio.Media.ALBUM,
 				MediaStore.Audio.Media.DURATION
 		};
-		
-		String ARTIST_NAME = label_passer.getArtistName();
-		String ALBUM_NAME = label_passer.getAlbumName();
 		
 		String[] selectionArgs = {"", ""};
 		selectionArgs[0] = ARTIST_NAME;

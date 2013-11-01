@@ -22,10 +22,18 @@ public class ArtistAlbumListFragment extends ListFragment implements LoaderManag
 	private static final int LOADER_ID = 0;
 	private SimpleCursorAdapter adapter;
 	PassLabel label_passer;
+	String ARTIST_NAME;
 	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if (savedInstanceState != null) {
+			ARTIST_NAME = savedInstanceState.getString("ARTIST_NAME_KEY");
+		} else {
+			ARTIST_NAME = label_passer.getArtistName();
+		}
+		
 		getLoaderManager().initLoader(LOADER_ID, null, this);
 		
 		String[] mProjection = {
@@ -53,6 +61,12 @@ public class ArtistAlbumListFragment extends ListFragment implements LoaderManag
 	}
 	
 	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState) {
+		savedInstanceState.putString("ARTIST_NAME_KEY", ARTIST_NAME);
+		super.onSaveInstanceState(savedInstanceState);
+	}
+	
+	@Override
 	public void onAttach(Activity activity) {
 		super.onAttach(activity);
         try {
@@ -77,7 +91,6 @@ public class ArtistAlbumListFragment extends ListFragment implements LoaderManag
 				MediaStore.Audio.Albums.ALBUM_ART
 			};
 		
-		String ARTIST_NAME = label_passer.getArtistName();
 		String[] selectionArgs = {""};
 		selectionArgs[0] = ARTIST_NAME;
 		String selectionClause = "ARTIST = ?";
@@ -129,6 +142,7 @@ public class ArtistAlbumListFragment extends ListFragment implements LoaderManag
 		index = mCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
 		String ALBUM_ART = mCursor.getString(index);
 		
+		mCursor.close();
 		
 		Intent intent = new Intent(getActivity(), AlbumSongListActivity.class);
 		intent.putExtra("ALBUM", ALBUM);

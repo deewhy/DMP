@@ -101,6 +101,8 @@ public class ArtistListFragment extends ListFragment implements LoaderManager.Lo
 		mCursor.moveToFirst();
 		String ARTIST = mCursor.getString(index);
 		
+		mCursor.close();
+		
 		Intent intent = new Intent(getActivity(), ArtistActivity.class);
 		intent.putExtra("ARTIST", ARTIST);
 		startActivity(intent);

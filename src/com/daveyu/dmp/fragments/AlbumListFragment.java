@@ -112,6 +112,7 @@ public class AlbumListFragment extends ListFragment implements LoaderManager.Loa
 		index = mCursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
 		String ALBUM_ART = mCursor.getString(index);
 		
+		mCursor.close();
 		
 		Intent intent = new Intent(getActivity(), AlbumSongListActivity.class);
 		intent.putExtra("ALBUM", ALBUM);
@@ -120,5 +121,5 @@ public class AlbumListFragment extends ListFragment implements LoaderManager.Loa
 		intent.putExtra("CALLER", "MAIN");
 		startActivity(intent);
 	}
-
+	
 }
